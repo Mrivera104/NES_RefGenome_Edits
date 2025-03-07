@@ -20,4 +20,8 @@ Now we are pretty much ready to map the long-read fastq files to the reference g
 
     minimap2 -ax map-hifi -t 50 /public/groups/meyerlab/eseal/refgenome/refgen_files/GCF_029215605.1_mMirAng1.0.hap1_genomic.fna \ /public/groups/meyerlab/eseal/refgenome/HiFI_data/SRR25478317.fastq | \ samtools sort -@50 -m 8G -O BAM -o SRR25478317_eseal_sorted.bam - samtools index SRR25478317_eseal_sorted.bam
 
+Because I have high-quality PacBio HiFi data and a map rate of 99% (after flagstat), I don't need to worry about trimming for unmapped reads. HURRAY! Now, we have our sorted BAM file ready for any additional downstream analysis. :) 
+
+Coverage = 35X. PERFECT!!!!!!!!! SHOULD HAVE DONE THIS IS THE FIRST PLACE. Thank you reviewer 2!!!!
+
 
