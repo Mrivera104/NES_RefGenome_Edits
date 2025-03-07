@@ -18,6 +18,6 @@ I downloaded the data I needed from NCBI.
 
 Now we are pretty much ready to map the long-read fastq files to the reference genome. Unlike before, I have to use Minimap2 for alignment purposes, since BWA-MEM works only for short-read data. 
 
-    minimap2 -a -t 50 /public/groups/meyerlab/eseal/refgenome/refgen_files/GCF_029215605.1_mMirAng1.0.hap1_genomic.fna /public/groups/meyerlab/eseal/refgenome/HiFI_data/SRR25478317.fastq | samtools sort -@50 -O BAM -o SRR25478317_eseal_sorted.bam -
+    minimap2 -ax map-hifi -t 50 /public/groups/meyerlab/eseal/refgenome/refgen_files/GCF_029215605.1_mMirAng1.0.hap1_genomic.fna \ /public/groups/meyerlab/eseal/refgenome/HiFI_data/SRR25478317.fastq | \ samtools sort -@50 -m 8G -O BAM -o SRR25478317_eseal_sorted.bam - samtools index SRR25478317_eseal_sorted.bam
 
 
