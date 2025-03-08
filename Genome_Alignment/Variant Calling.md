@@ -41,7 +41,6 @@ gatk AddOrReplaceReadGroups \
   -PL PACBIO \
   -PU unit1 \
   -SM SRR25478317
-```
 
 if [ $? -eq 0 ]; then
   echo "Finished AddOrReplaceReadGroups for $MARKDUP_BAM. Output: $READGROUP_BAM"
@@ -51,3 +50,4 @@ else
 fi
 
 echo "Processing completed successfully. Output files are in $OUTPUT_DIR."
+```
