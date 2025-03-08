@@ -12,6 +12,13 @@ From ChatGPT: "The heterozygosity value provided by ANGSD can be interpreted as 
 
     angsd -P 8 -i SRR25478317_eseal_sorted.bam -anc /public/groups/meyerlab/eseal/refgenome/refgen_files/GCF_029215605.1_mMirAng1.0.hap1_genomic.fna -dosaf 1 -gl 1 -out SRR25478317_eseal_angsdput -C 50 -ref /public/groups/meyerlab/eseal/refgenome/refgen_files/GCF_029215605.1_mMirAng1.0.hap1_genomic.fna -minQ 20 -minmapq 30
     realSFS -fold 1 -P 80 SRR25478315_eseal_mapped_angsdput.saf.idx > SRR25478315_eseal_mapped_est.ml
+Afterwards, just plug that into RStudio
+
+    setwd("C:/Users/Millie/Desktop/eseal_ped")
+    a<-scan("SRR25478317_eseal_est.ml")
+    a[2]/sum(a)
+and this is what we get: 0.0002644552
+
 
 
 
