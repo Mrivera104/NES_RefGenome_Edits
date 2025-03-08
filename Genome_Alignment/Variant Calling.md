@@ -24,13 +24,6 @@ gatk MarkDuplicates \
   -O "$MARKDUP_BAM" \
   -M "$METRICS_FILE"
 
-if [ $? -eq 0 ]; then
-  echo "Finished MarkDuplicates for $BAM_FILE. Output: $MARKDUP_BAM"
-else
-  echo "Error running MarkDuplicates on $BAM_FILE."
-  exit 1
-fi
-
 # Run GATK AddOrReplaceReadGroups
 echo "Running AddOrReplaceReadGroups on $MARKDUP_BAM..."
 gatk AddOrReplaceReadGroups \
@@ -42,12 +35,4 @@ gatk AddOrReplaceReadGroups \
   -PU unit1 \
   -SM SRR25478317
 
-if [ $? -eq 0 ]; then
-  echo "Finished AddOrReplaceReadGroups for $MARKDUP_BAM. Output: $READGROUP_BAM"
-else
-  echo "Error running AddOrReplaceReadGroups on $MARKDUP_BAM."
-  exit 1
-fi
-
-echo "Processing completed successfully. Output files are in $OUTPUT_DIR."
 ```
