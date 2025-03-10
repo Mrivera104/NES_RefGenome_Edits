@@ -45,6 +45,7 @@ BUT DEEPVARIANT DIDN'T WORK FOR ME!!!!!!!!!! TOO COMPLEX!!!! NEEDS ULTRA COMPUTI
 
 ```console
 #!/bin/bash
+set -e  # Exit immediately if a command exits with a non-zero status
 
 # Define input and output directories
 INPUT_DIR="/public/groups/meyerlab/eseal/refgenome/variant_call"
@@ -53,53 +54,44 @@ OUTPUT_DIR="${INPUT_DIR}"
 # Define input files
 REFGENOME="GCF_029215605.1_mMirAng1.0.hap1_genomic.fna"
 BAM_FILE="SRR25478317_eseal_sorted_dupMarked_RG.bam"
-BASENAME=$(basename "SRR25478317_eseal")
+BASENAME=$(basename "$BAM_FILE" .bam)  # Extract filename without extension
 GVCF_FILE="${OUTPUT_DIR}/${BASENAME}.g.vcf.gz"
 VCF_FILE="${OUTPUT_DIR}/${BASENAME}.vcf.gz"
+FILTERED_VCF="${OUTPUT_DIR}/${BASENAME}_varfilter.vcf"
 
-# Run GATK HaplotypeCaller
-echo "Running HaplotypeCaller on $BAM_FILE..."
+# Run GATK HaplotypeCaller with 50 threads
+echo "Running HaplotypeCaller on $BAM_FILE with 50 threads..."
 gatk HaplotypeCaller \
   -I "$BAM_FILE" \
   -R "$REFGENOME" \
   -O "$GVCF_FILE" \
-  --emit-ref-confidence GVCF
+  --emit-ref-confidence GVCF \
+  --native-pair-hmm-threads 50
 
-if [ $? -eq 0 ]; then
-  echo "Finished HaplotypeCaller for $BAM_FILE."
-else
-  echo "Error running HaplotypeCaller on $BAM_FILE."
-  exit 1
-fi
+echo "Finished HaplotypeCaller."
 
-# Index VCF file
+# Index GVCF file
+echo "Indexing GVCF file..."
 tabix -p vcf "$GVCF_FILE"
 
 # Run GATK GenotypeGVCFs
+echo "Running GenotypeGVCFs..."
 gatk GenotypeGVCFs \
   -R "$REFGENOME" \
   -V "$GVCF_FILE" \
   -O "$VCF_FILE"
 
-if [ $? -eq 0 ]; then
-  echo "Finished GenotypeGVCFs for $GVCF_FILE."
-else
-  echo "Error running GenotypeGVCFs for $GVCF_FILE."
-  exit 1
-fi
+echo "Finished GenotypeGVCFs."
 
 # Run GATK VariantFiltration
+echo "Running VariantFiltration..."
 gatk VariantFiltration \
   -R "$REFGENOME" \
   -V "$VCF_FILE" \
-  -O "${OUTPUT_DIR}/${BASENAME}_varfilter.vcf" \
+  -O "$FILTERED_VCF" \
   --filter-name "Low_depth10" \
   --filter-expression "DP < 10"
 
-if [ $? -eq 0 ]; then
-  echo "Finished VariantFiltration for $VCF_FILE."
-else
-  echo "Error running VariantFiltration for $VCF_FILE."
-  exit 1
-fi
+echo "Finished VariantFiltration."
+echo "Pipeline completed successfully!"
 ```
