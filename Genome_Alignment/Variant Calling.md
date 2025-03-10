@@ -37,7 +37,12 @@ gatk AddOrReplaceReadGroups \
 
 ```
 
-After all this, we should have BAM files that are ready to be processed. To perform variant calling, we will first use haplotypecaller to create a genotype VCF file, call genotypes and filter to get a proper VCF file we can use for downstream analyses. 
+Turns out, after adding readgroups and all of that, you shouldn't perform variant calling with GATK ... Apparently the best way to perform variant calling on long-read data is by using DeepVariant. 
+
+"DeepVariant is a deep learning-based variant caller that takes aligned reads (in BAM or CRAM format), produces pileup image tensors from them, classifies each tensor using a convolutional neural network, and finally reports the results in a standard VCF or gVCF file." https://github.com/google/deepvariant
+
+BUT DEEPVARIANT DIDN'T WORK FOR ME!!!!!!!!!! TOO COMPLEX!!!! NEEDS ULTRA COMPUTING POWER I DON'T HAVE! Whatever, I updated GATK and tried again. 
+
 ```console
 #!/bin/bash
 
@@ -57,8 +62,8 @@ echo "Running HaplotypeCaller on $BAM_FILE..."
 gatk HaplotypeCaller \
   -I "$BAM_FILE" \
   -R "$REFGENOME" \
-  -ERC GVCF \
-  -O "$GVCF_FILE"
+  -O "$GVCF_FILE" \
+  --emit-ref-confidence GVCF
 
 if [ $? -eq 0 ]; then
   echo "Finished HaplotypeCaller for $BAM_FILE."
