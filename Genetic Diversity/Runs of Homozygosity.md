@@ -1,7 +1,13 @@
 # Calculate Runs of Homozygosity
 I will be calculating runs of homozygosity using bcftools, just like I did before. 
 
-    bcftools roh -G30 --AF-dflt 0.1 /public/groups/meyerlab/eseal/refgenome/variant_call/SRR25478317_eseal_varfilter.vcf -o SRR25478317_eseal_roh
+    bcftools roh -G30 --AF-dflt 0.1 /public/groups/meyerlab/eseal/refgenome/variant_call/SRR25478317_eseal_renamed.vcf.gz.vcf -o SRR25478317_eseal_roh
+
+Next, I isolate only the information I want from the generated file - that is, sample name, chromosome, start position of the ROH, end position, and length (in bp):
+
+    grep "RG" SRR25478317_eseal_roh | cut -f 2,3,4,5,6 > SRR25478317_eseal_roh.txt
+
+Here is the R code I used to visualize results and calculate SROH, NROH, LROH, and FROH
 
 ```{r}
 # Load the required packages
