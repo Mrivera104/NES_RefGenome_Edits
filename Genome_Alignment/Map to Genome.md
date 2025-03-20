@@ -24,4 +24,12 @@ Because I have high-quality PacBio HiFi data and a map rate of 99% (after flagst
 
 Coverage = 35X. PERFECT!!!!!!!!! SHOULD HAVE DONE THIS IS THE FIRST PLACE. Thank you reviewer 2!!!!
 
+03/20/2025: So for some reason the scaffold names (SCAF_...) didn't transfer to the BAM and thus VCF file created. Here is what I did to remedy that: 
 
+1.) Created a tab-deliminated file with the chromosome names in the bam file on one side and the new scaffold names on the right.  
+2.) Used samtools view to create a sam file with the old header names 
+    
+    samtools view -H SRR25478317_eseal_sorted.bam > old_header.sam
+3.) Then, used samtools reheader to generate a new bam file with the proper scaffold names
+
+    samtools reheader old_header.sam SRR25478317_eseal.bam > SRR25478317_eseal_sorted_rn.bam
