@@ -70,10 +70,6 @@ gatk HaplotypeCaller \
 
 echo "Finished HaplotypeCaller."
 
-# Index GVCF file
-echo "Indexing GVCF file..."
-tabix -p vcf "$GVCF_FILE"
-
 # Run GATK GenotypeGVCFs
 echo "Running GenotypeGVCFs..."
 gatk GenotypeGVCFs \
@@ -95,3 +91,12 @@ gatk VariantFiltration \
 echo "Finished VariantFiltration."
 echo "Pipeline completed successfully!"
 ```
+03/20/2025: For some strange reason, the scaffold names are weird and not how I want them to be. though all 497 scaffolds are there. I renamed the bam file and also renamed the vcf file. 
+
+1.) Create a file with new scaffold names 
+2.) Use bcftools annotate to generate a renamed vcf file using the text file of scaffold names
+
+    bcftools annotate --rename-chrs chr_map.txt -o SRR25478317_eseal_renamed.vcf.gz SRR25478317_eseal.vcf.gz
+3.) Use bcftools view to make sure renaming was a success
+
+    bcftools view -h SRR25478317_eseal_renamed.vcf.gz | grep "^##contig"
