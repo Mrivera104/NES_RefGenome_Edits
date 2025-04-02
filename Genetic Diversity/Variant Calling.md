@@ -96,7 +96,7 @@ echo "Pipeline completed successfully!"
 1.) Create a file with new scaffold names 
 2.) Use bcftools annotate to generate a renamed vcf file using the text file of scaffold names
 
-    bcftools annotate --rename-chrs chr_map.txt -o SRR25478317_eseal_renamed.vcf.gz SRR25478317_eseal.vcf.gz
+    bcftools annotate --rename-chrs chr_map.txt SRR25478317_eseal_output_homsites.vcf.gz -Oz -o SRR25478317_eseal_output_homsites_rename.vcf.gz
 3.) Use bcftools view to make sure renaming was a success
 
     bcftools view -h SRR25478317_eseal_renamed.vcf.gz | grep "^##contig"
