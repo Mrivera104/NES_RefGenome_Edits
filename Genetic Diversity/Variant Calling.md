@@ -91,12 +91,9 @@ gatk VariantFiltration \
 echo "Finished VariantFiltration."
 echo "Pipeline completed successfully!"
 ```
-03/20/2025: For some strange reason, the scaffold names are weird and not how I want them to be. though all 497 scaffolds are there. I renamed the bam file and also renamed the vcf file. 
 
-1.) Create a file with new scaffold names 
-2.) Use bcftools annotate to generate a renamed vcf file using the text file of scaffold names
+subset by the 17 largest scaffolds: 
 
-    bcftools annotate --rename-chrs chr_map.txt SRR25478317_eseal_output_homsites.vcf.gz -Oz -o SRR25478317_eseal_output_homsites_rename.vcf.gz
-3.) Use bcftools view to make sure renaming was a success
+    bcftools view -r NW_026991709.1,NW_026991710.1,NW_026991711.1,NW_026991712.1,NW_026991713.1,NW_026991714.1,NW_026991715.1,NW_026991716.1,NW_026991717.1,NW_026991718.1,NW_026991719.1,NW_026991720.1,NW_026991721.1,NW_026991722.1,NW_026991723.1,NW_026991724.1,NW_026991725.1 -Oz -o SRR25478317_eseal_subset.vcf.gz /public/groups/meyerlab/eseal/refgenome/variant_call/ncbi/final_file/SRR25478317_eseal_varfilter.vcf.gz
 
     bcftools view -h SRR25478317_eseal_renamed.vcf.gz | grep "^##contig"
