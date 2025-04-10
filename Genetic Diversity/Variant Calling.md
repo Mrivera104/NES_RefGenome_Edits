@@ -96,4 +96,6 @@ subset by the 17 largest scaffolds:
 
     bcftools view -r NW_026991709.1,NW_026991710.1,NW_026991711.1,NW_026991712.1,NW_026991713.1,NW_026991714.1,NW_026991715.1,NW_026991716.1,NW_026991717.1,NW_026991718.1,NW_026991719.1,NW_026991720.1,NW_026991721.1,NW_026991722.1,NW_026991723.1,NW_026991724.1,NW_026991725.1 -Oz -o SRR25478317_eseal_subset.vcf.gz /public/groups/meyerlab/eseal/refgenome/variant_call/ncbi/final_file/SRR25478317_eseal_varfilter.vcf.gz
 
-    bcftools view -h SRR25478317_eseal_renamed.vcf.gz | grep "^##contig"
+Check to see if this worked: 
+
+    bcftools view -h SRR25478317_eseal_subset.vcf.gz | grep "^##contig"
