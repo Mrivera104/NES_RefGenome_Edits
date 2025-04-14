@@ -99,3 +99,9 @@ subset by the 17 largest scaffolds:
 Check to see if this worked: 
 
     bcftools view -h SRR25478317_eseal_subset.vcf.gz | grep "^##contig"
+
+# Phasing VCF file 
+
+I'm choosing not to filter using GATK because the data I'm working with is very high quality. No reason to trim anything under 10X like usual, as we don't really have that! 
+
+Using the all sites vcf file that was subset by the 17 largest scaffolds, I am going to phase the vcf file to confirm genotypes. 
