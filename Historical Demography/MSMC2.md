@@ -15,4 +15,20 @@ Looking at this now, since I have all sites emitted, I might not actually need t
  MAPPABILITY BED FILE: 
 - This mask defines regions in the reference genome in which we trust the mapping to be of high quality because the reference sequence is unique in that area.
 
-  
+# Step 1: Generate Mask Files
+I am going to use samtools depth to create a bed file with callable sites. 
+
+    samtools depth -a /public/groups/meyerlab/eseal/refgenome/SRR25478317_eseal_sorted_subset.bam | \
+      awk '$3 >= 10 {print $1"\t"$2-1"\t"$2}' > callable_mask.bed
+
+For the mappability bed file, I am using a software called GenMap. 
+
+    genmap index -F GCF_029215605.1_mMirAng1.0.hap1_genomic.fna -I genmap_index_dir
+    genmap map -K 100 -E 2 -I genmap_index_dir -O . -t 4
+- `K 100`: read length
+- `E 2`: allow 2 mismatches
+- `I genmap_index_dir`: write to a separate directory
+- `O`: output directory
+- `-t`: how many cores to use
+
+Result is a .wig file showing mappability scores from 0 to 1.
