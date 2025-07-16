@@ -27,12 +27,57 @@ Next, I modified the snpEff.config file to include my organism and its genome. I
 
 # Step 4: Filter Variants from Annotated VCF 
 
+For this first analysis, I'm trying to get a unique gene name list of high impact variants. These are the effects I've chosen as high impact, putative loss of function effects: 
 
-    java -jar SnpSift.jar filter "ANN[0].EFFECT has 'missense_variant' | ANN[0].EFFECT has 'frameshift_variant'" SRR25478317_eseal_output_homsites_subset.ann.vcf > deleterious_variants.vcf
+- stop gained
+- frameshift variant
+- splice acceptor variant
+- splice donor variants
+- start lost
+- stop lost
+- exon loss variant
+
+Here is code I used to generate this gene list: 
+
+    SnpSift filter \
+      "(ANN[*].IMPACT = 'HIGH') & ((ANN[*].EFFECT has 'stop_gained') | (ANN[*].EFFECT has 'frameshift_variant') | (ANN[*].EFFECT has 'splice_acceptor_variant') | (ANN[*].EFFECT has 'splice_donor_variant') | (ANN[*].EFFECT has 'start_lost') | (ANN[*].EFFECT has 'stop_lost') | (ANN[*].EFFECT has 'exon_loss_variant'))" \
+      SRR25478317_eseal_output_homsites_subset.ann.vcf | \
+    SnpSift extractFields - "ANN[*].GENE" | \
+    grep -v "^#" | \
+    tr ',;' '\n' | \
+    grep -v "^exon-" | \
+    grep -v "^$" | \
+    sort | uniq > SRR25478317_LoF_HighImpact_genes.txt
+
+For creating a loss of function variant rate per chromosome figure in R, I need to create a TSV file with all the necessary information. For that, I used this bash script: 
+
+```
+#!/bin/bash
+
+# Input VCF file (change this to your annotated VCF file if needed)
+VCF="SRR25478317_eseal_output_homsites_subset.ann.vcf"
+
+# Output file
+OUTFILE="LOF_variants.tsv"
+
+# Run SnpSift to filter for high-impact LoF variants and extract gene names
+SnpSift filter \
+  "(ANN[*].IMPACT = 'HIGH') & ((ANN[*].EFFECT has 'stop_gained') | \
+  (ANN[*].EFFECT has 'frameshift_variant') | \
+  (ANN[*].EFFECT has 'splice_acceptor_variant') | \
+  (ANN[*].EFFECT has 'splice_donor_variant') | \
+  (ANN[*].EFFECT has 'start_lost') | \
+  (ANN[*].EFFECT has 'stop_lost') | \
+  (ANN[*].EFFECT has 'exon_loss_variant'))" \
+  "$VCF" | \
+SnpSift extractFields - "ANN[*].GENE" | \
+grep -v "^#" | \
+tr ',;' '\n' | \
+grep -v "^exon-" | \
+grep -v "^$" | \
+sort | uniq > "$OUTFILE"
+```
 
 
-    java -jar SnpSift.jar filter "ANN[0].IMPACT has 'HIGH'" SRR25478317_eseal_output_homsites_subset.ann.vcf > high_impact_output.vcf
 
-
-    java -jar SnpSift.jar filter "(QUAL > 30) & (DP > 10)" high_impact_output.vcf > high_impact_qual_filter_output.vcf
 
