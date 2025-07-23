@@ -40,7 +40,11 @@ For this first analysis, I'm trying to get a unique gene name list of high impac
 Here is code I used to generate this gene list: 
 
 ```
-
+SnpSift filter \
+  "(ANN[*].IMPACT = 'HIGH') & ((ANN[*].EFFECT has 'stop_gained') | (ANN[*].EFFECT has 'frameshift_variant') | (ANN[*].EFFECT has 'splice_acceptor_variant') | (ANN[*].EFFECT has 'splice_donor_variant') | (ANN[*].EFFECT has 'start_lost') | (ANN[*].EFFECT has 'stop_lost') | (ANN[*].EFFECT has 'exon_loss_variant'))" \
+  SRR25478317_eseal_output_homsites_subset.ann.vcf | \
+SnpSift extractFields - -s "\t" "ANN[*].GENE" | \
+grep -v "^#" | sort | uniq > SRR25478317_LoF_HighImpact_genes_2.txt
 ```
 
 For creating a loss of function variant rate per chromosome figure in R, I need to create a TSV file with all the necessary information. For that, I used this bash script: 
