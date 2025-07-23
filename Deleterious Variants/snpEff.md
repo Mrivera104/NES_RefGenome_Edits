@@ -39,43 +39,18 @@ For this first analysis, I'm trying to get a unique gene name list of high impac
 
 Here is code I used to generate this gene list: 
 
-    SnpSift filter \
-      "(ANN[*].IMPACT = 'HIGH') & ((ANN[*].EFFECT has 'stop_gained') | (ANN[*].EFFECT has 'frameshift_variant') | (ANN[*].EFFECT has 'splice_acceptor_variant') | (ANN[*].EFFECT has 'splice_donor_variant') | (ANN[*].EFFECT has 'start_lost') | (ANN[*].EFFECT has 'stop_lost') | (ANN[*].EFFECT has 'exon_loss_variant'))" \
-      SRR25478317_eseal_output_homsites_subset.ann.vcf | \
-    SnpSift extractFields - "ANN[*].GENE" | \
-    grep -v "^#" | \
-    tr ',;' '\n' | \
-    grep -v "^exon-" | \
-    grep -v "^$" | \
-    sort | uniq > SRR25478317_LoF_HighImpact_genes.txt
+```
+
+```
 
 For creating a loss of function variant rate per chromosome figure in R, I need to create a TSV file with all the necessary information. For that, I used this bash script: 
 
 ```
-#!/bin/bash
-
-# Input VCF file (change this to your annotated VCF file if needed)
-VCF="SRR25478317_eseal_output_homsites_subset.ann.vcf"
-
-# Output file
-OUTFILE="LOF_variants.tsv"
-
-# Run SnpSift to filter for high-impact LoF variants and extract gene names
-SnpSift filter \
-  "(ANN[*].IMPACT = 'HIGH') & ((ANN[*].EFFECT has 'stop_gained') | \
-  (ANN[*].EFFECT has 'frameshift_variant') | \
-  (ANN[*].EFFECT has 'splice_acceptor_variant') | \
-  (ANN[*].EFFECT has 'splice_donor_variant') | \
-  (ANN[*].EFFECT has 'start_lost') | \
-  (ANN[*].EFFECT has 'stop_lost') | \
-  (ANN[*].EFFECT has 'exon_loss_variant'))" \
-  "$VCF" | \
-SnpSift extractFields - "ANN[*].GENE" | \
-grep -v "^#" | \
-tr ',;' '\n' | \
-grep -v "^exon-" | \
-grep -v "^$" | \
-sort | uniq > "$OUTFILE"
+SnpSift extractFields SRR25478317_eseal_output_homsites_subset.ann.vcf \
+"CHROM" "POS" "REF" "ALT" \
+"ANN[*].EFFECT" "ANN[*].IMPACT" "ANN[*].GENE" \
+"ANN[*].FEATURE_ID" "ANN[*].BIOTYPE" | \
+grep -E 'stop_gained|frameshift_variant|splice_acceptor_variant|splice_donor_variant|start_lost|stop_lost|exon_loss_variant' > LOF_variants.tsv
 ```
 
 
