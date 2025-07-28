@@ -47,6 +47,24 @@ SnpSift extractFields - -s "\t" "ANN[*].GENE" | \
 grep -v "^#" | sort | uniq > SRR25478317_LoF_HighImpact_genes_2.txt
 ```
 
+I had to extract the mostimpactful consequence per variant, instead of just reporting all possible effects for every variant.
+
+    bcftools view -v snps,indels SRR25478317_eseal_output_homsites_subset.ann.vcf | \
+      SnpSift extractFields - "ANN[0].IMPACT" | \
+      grep -v '^$' | sort | uniq -c | sort -nr
+
+That leaves me with a total of 1,417,101 effects (which matches the number of variants reported by SnpEff). This is the breakdown: 
+
+- 1401772 MODIFIER 98.91% -> outside of a coding region
+-  4970 LOW 0.35%
+- 4686 HIGH 0.33%
+- 3180 MODERATE 0.22%
+- 4970 + 4686 + 3180 = 12836, 0.90% in CDS
+- 4970+4686+3180 = 12836 in CDS
+- *12836/34767161 = 0.000369 heterozygosity in CDS*
+
+
+
 For creating a loss of function variant rate per chromosome figure in R, I need to create a TSV file with all the necessary information. For that, I used this bash script: 
 
 ```
