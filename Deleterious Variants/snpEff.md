@@ -25,29 +25,28 @@ Next, I modified the snpEff.config file to include my organism and its genome. I
 
     java -Xmx4g -jar snpEff.jar GCF_029215605.1 /public/groups/meyerlab/eseal/refgenome/variant_call/ncbi/SRR25478317_eseal_output_homsites_subset.vcf.gz > SRR25478317_eseal_output_homsites_subset.ann.vcf
 
-# Step 4: Filter Variants from Annotated VCF 
+# Step 4: Reporting variants in protein-coding sequences, CDS heterozygosity and highest impact per variant
 
-For this first analysis, I'm trying to get a unique gene name list of high impact variants. These are the effects I've chosen as high impact, putative loss of function effects: 
-
-- stop gained
-- frameshift variant
-- splice acceptor variant
-- splice donor variants
-- start lost
-- stop lost
-- exon loss variant
-
-Here is code I used to generate this gene list: 
+So now I need to figure out just how much of the genome is in protein-coding sequences. This will allow me to calculate the heterozgosity in these CDS, which will obviously be even lower than genome-wide heterozygosity. I can use the gff file for this. 
 
 ```
-SnpSift filter \
-  "(ANN[*].IMPACT = 'HIGH') & ((ANN[*].EFFECT has 'stop_gained') | (ANN[*].EFFECT has 'frameshift_variant') | (ANN[*].EFFECT has 'splice_acceptor_variant') | (ANN[*].EFFECT has 'splice_donor_variant') | (ANN[*].EFFECT has 'start_lost') | (ANN[*].EFFECT has 'stop_lost') | (ANN[*].EFFECT has 'exon_loss_variant'))" \
-  SRR25478317_eseal_output_homsites_subset.ann.vcf | \
-SnpSift extractFields - -s "\t" "ANN[*].GENE" | \
-grep -v "^#" | sort | uniq > SRR25478317_LoF_HighImpact_genes_2.txt
+# Define your list of 17 largest scaffolds
+scaffolds="NW_026991709.1 NW_026991710.1 NW_026991711.1 NW_026991712.1 NW_026991713.1 NW_026991714.1 NW_026991715.1 NW_026991716.1 NW_026991717.1 NW_026991718.1 NW_026991719.1 NW_026991720.1 NW_026991721.1 NW_026991722.1 NW_026991723.1 NW_026991724.1 NW_026991725.1"
+
+# Step 1: Extract CDS and convert to BED
+awk '$3 == "CDS" {print $1"\t"($4-1)"\t"$5}' genes.gff > cds_all.bed
+
+# Step 2: Filter to only top 17 scaffolds
+grep -F -w -f <(echo "$scaffolds" | tr ' ' '\n') cds_all.bed > cds_top17.bed
+
+# Step 3: Merge overlapping regions
+bedtools sort -i cds_top17.bed | bedtools merge -i - > cds_merged_top17.bed
+
+# Step 4: Sum total CDS length
+awk '{sum += $3 - $2} END {print sum}' cds_merged_top17.bed
 ```
 
-I had to extract the mostimpactful consequence per variant, instead of just reporting all possible effects for every variant.
+Next, I had to extract the most impactful consequence per variant, instead of just reporting all possible effects for every variant.
 
     bcftools view -v snps,indels SRR25478317_eseal_output_homsites_subset.ann.vcf | \
       SnpSift extractFields - "ANN[0].IMPACT" | \
@@ -65,15 +64,6 @@ That leaves me with a total of 1,417,101 effects (which matches the number of va
 
 
 
-For creating a loss of function variant rate per chromosome figure in R, I need to create a TSV file with all the necessary information. For that, I used this bash script: 
-
-```
-SnpSift extractFields SRR25478317_eseal_output_homsites_subset.ann.vcf \
-"CHROM" "POS" "REF" "ALT" \
-"ANN[*].EFFECT" "ANN[*].IMPACT" "ANN[*].GENE" \
-"ANN[*].FEATURE_ID" "ANN[*].BIOTYPE" | \
-grep -E 'stop_gained|frameshift_variant|splice_acceptor_variant|splice_donor_variant|start_lost|stop_lost|exon_loss_variant' > LOF_variants.tsv
-```
 
 
 
