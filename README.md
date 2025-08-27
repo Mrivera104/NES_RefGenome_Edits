@@ -1,24 +1,63 @@
 # README: Genome assembly and annotation of a deep-diving pinniped, the northern elephant seal (*Mirounga angustirostris*)
 Genomic Analyses for the NES Reference Genome Manuscript 
 
-## Overview
+## Overview of the data
 
 This repository contains scripts used for genomic analyses using the reference genome of the northern elephant seal (*Mirounga angustirostris*) created through the California Conservation Genomics Project (CCGP). Analyses conducted in this paper include repeat masking, genome alignment of PacBio Hifi long read data, variant calling, estimation of genome-wide heterozygosity, and variant annotation. Scripts used in the de novo assembly of the NES reference genome are provided by the CCGP and included in the manuscript. 
 
 The repository is organized to maximize reproducibility. All scripts use relative paths where possible. Input data required to reproduce R Studio plots are included.
 
-# Description of the data
+### Data sources
 
- We use the raw FASTA accompanying annotation file downloaded through NCBI BioProject accession number PRJNA937321. GenBank assembly for the raw FASTA file is GenBank assembly GCA_029215605.1. The annotation file used was GCF_029215605.1_mMirAng1.0.hap1_genomic.gff.gz downloaded through NCBI FTP.
+- Reference genome: GenBank assembly GCA_029215605.1 (BioProject PRJNA937321)
+- PacBio HiFi long reads: NCBI SRA accession SRR25478317 (BioProject PRJNA998853)
+- Genome annotation: GCF_029215605.1_mMirAng1.0.hap1_genomic.gff.gz (NCBI FTP)
 
-### How to download the data
-
-The following code was used to download the raw FASTA file and PacBio HiFi long read data from NCBI. 
+### Download commands
 
 ```
+# Reference genome
 datasets download genome accession GCF_02921506.1 --include genome
 ```
 ```
+# PacBio HiFi reads
 prefetch --max-size 100G SRR25478317
 fasterq-dump --threads 8 SRR25478317.sra
 ```
+```
+# Annotation file
+wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/029/215/605/GCF_029215605.1_mMirAng1.0.hap1/GCF_029215605.1_mMirAng1.0.hap1_genomic.gff.gz
+```
+
+# Overview of the analyses
+
+## Repeat Masking
+
+- Tool: RepeatMasker v4.1.5
+- Purpose: Mask interspersed repeats and low-complexity regions in the reference genome.
+
+## Alignment of long read data to genome
+
+Minimap2 ver. 2.29
+Samtools ver. 1.11
+
+## Variant Calling
+
+GATK ver. 3.8
+
+## Estimation of genome-wide heterozygosity
+
+ANGSD ver. 0.94
+
+## Historical demography
+
+BCFtools ver. 1.14
+PSMC ver. 0.6.5
+
+## Variant annotation
+
+SnpEff ver. 5.2
+SnpSift ver. 5.2
+
+# Sharing/Access information
+
