@@ -57,11 +57,18 @@ wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/029/215/605/GCF_029215605.1_mM
 # Contents of this repository
 
 ## Bash scripts
-- gatk_variant_calling_pipeline.sh – pipeline for read alignment and variant calling
+- repeat_mask.sh - 
+- genome_alignment.sh -
+- variant_calling.sh – pipeline for read alignment and variant calling
+- angsd_heterozygosity.sh -
+- historical_demography.sh -
+- variant_annotation.sh -
+- extract_lof_variants.sh -
+- gene_name_extraction - 
 
 ## R scripts
-- lof_variant_plot.R – visualization of LoF variant density across scaffolds
-- nuc_diversity_barplot.R – marine mammal heterozygosity comparison plot
+- nucleotide_diversity_comparison.R – marine mammal genome-wide heterozygosity comparison plot
+- - lof_variant_plotting.R – visualization of LoF variant density and rate across scaffolds
 
 ## Supporting data
 - nuc_diversity_marinemammals.csv – compiled heterozygosity values across marine mammals
