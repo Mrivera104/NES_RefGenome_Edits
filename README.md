@@ -29,7 +29,7 @@ fasterq-dump --threads 8 SRR25478317.sra
 wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/029/215/605/GCF_029215605.1_mMirAng1.0.hap1/GCF_029215605.1_mMirAng1.0.hap1_genomic.gff.gz
 ```
 
-# Overview of the analyses
+# Analyses
 
 ## Repeat Masking
 
@@ -38,26 +38,44 @@ wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/029/215/605/GCF_029215605.1_mM
 
 ## Alignment of long read data to genome
 
-Minimap2 ver. 2.29
-Samtools ver. 1.11
+- Tools: Minimap2 v2.29, Samtools v1.11
+- Purpose: Align long reads to reference genome, sort and index BAM files.
 
 ## Variant Calling
 
-GATK ver. 3.8
+- Tool: GATK v3.8
+- Purpose: Detect SNPs and indels. Pipeline includes duplicate marking, read group assignment, and variant filtering.
 
 ## Estimation of genome-wide heterozygosity
 
-ANGSD ver. 0.94
+- Tool: ANGSD v0.94
+- Purpose: Calculate heterozygosity from sequence data across the genome.
 
 ## Historical demography
 
-BCFtools ver. 1.14
-PSMC ver. 0.6.5
+- Tools: BCFtools v1.14, PSMC v0.6.5
+- Purpose: Infer effective population size changes over time.
 
 ## Variant annotation
 
-SnpEff ver. 5.2
-SnpSift ver. 5.2
+- Tools: SnpEff v5.2, SnpSift v5.2
+- Purpose: Annotate variants, classify loss-of-function (LoF) mutations.
+
+# Contents of this repository
+
+## Bash scripts
+
+- gatk_variant_calling_pipeline.sh – pipeline for read alignment and variant calling
+
+## R scripts
+
+- lof_variant_plot.R – visualization of LoF variant density across scaffolds
+- nuc_diversity_barplot.R – marine mammal heterozygosity comparison plot
+
+## Supporting data
+
+- nuc_diversity_marinemammals.csv – compiled heterozygosity values across marine mammals
+- LOF_variants.tsv – annotated LoF variants in the elephant seal genome
 
 # Sharing/Access information
 
